@@ -1,0 +1,24 @@
+{% extends 'base.html'%}
+
+{% block title %}Pet List{% endblock %}
+
+{% block content %}
+
+<h1>Pets</h1>
+
+
+{% for pet in pets %}
+<img src={{pet.photo_url}} alt="">
+    {% if pet.avaliable %}
+    <p>{{pet.name}} <b>is avaliable!</b></p>
+    {% else %}
+    <p>{{pet.name}} is no longer avaliable</p>  
+    {% endif %}
+{% endfor %}
+
+
+<form action="/add" method="GET">
+    <button>Add a Pet</button>
+</form>
+
+{% endblock%}

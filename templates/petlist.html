@@ -8,11 +8,13 @@
 
 
 {% for pet in pets %}
-<img src={{pet.photo_url}} alt="">
+    {% if pet.photo_url %}
+    <img src={{pet.photo_url}} alt="">
+    {% endif %}
     {% if pet.avaliable %}
-    <p>{{pet.name}} <b>is avaliable!</b></p>
+    <a href="{{ '/%s'%pet.id }}"><p>{{pet.name}} <b>is avaliable!</b></p></a>
     {% else %}
-    <p>{{pet.name}} is no longer avaliable</p>  
+    <a href="{{ '/%s'%pet.id }}"><p>{{pet.name}} is no longer avaliable</p></a> 
     {% endif %}
 {% endfor %}
 

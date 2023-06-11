@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, Pet
-from forms import AddPetForm
+from forms import AddPetForm, EditPetForm
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///adoption'
@@ -22,7 +22,7 @@ def show_pets():
     return render_template("petlist.html", pets=pets)
 
 @app.route('/add')
-def render_pet_form():
+def show_pet_form():
     """Renders the add pet form"""
     form = AddPetForm()
     return render_template("add_pet_form.html", form=form)
@@ -45,3 +45,25 @@ def add_pet():
         return redirect("/")
     else:
         return render_template("add_pet_form.html", form=form)
+    
+@app.route('/<int:pet_id>')
+def show_pet(pet_id):
+    """Shows the pet and gives access to the edit pet form"""
+    form = EditPetForm()
+    pet = Pet.query.get_or_404(pet_id)
+    return render_template("pet.html", pet=pet, form=form)
+
+@app.route('/<int:pet_id>', methods=["POST"])
+def edit_pet(pet_id):
+    """Upon vaidating the edited pet information, it puts it into the database"""
+    pet = Pet.query.get_or_404(pet_id)
+    form = EditPetForm()
+
+    if form.validate_on_submit():
+        pet.photo_url = form.photo_url.data
+        pet.notes = form.notes.data
+        pet.avaliable = form.avaliable.data
+        db.session.commit()
+        return redirect("/")
+    else:
+        return render_template("pet.html", pet=pet, form=form)
